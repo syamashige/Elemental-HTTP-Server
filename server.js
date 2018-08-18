@@ -24,33 +24,29 @@ const server = http.createServer((req, res) => {
         if (req.url === "/styles.css") {
             fs.readFile("./public/styles.css", "utf-8", (err, data) => {
                 res.writeHead(200, { 'content-type': 'text/css' });
-                // res.write(data);
+                // res.write(data);  //Returned an "unhandled event" - "throw"
                 res.end(data)
-            })
+            });
         }
         if (req.url === "/") {
             fs.readFile("./public/index.html", "utf-8", (err, data) => {
-                // if (err) throw err;
                 res.writeHead(200, { 'content-type': 'text/html' });
-                // res.write(data);
                 res.end(data)
-            })
+            });
         } else {
             fs.readFile(`./public${req.url}`, "utf-8", (err, data) => {
                 if (err) {
                     fs.readFile("./public/404.html", "utf-8", (err, data) => {
                         res.writeHead(500, { 'content-type': 'text/html' });
-                        // res.write(data);
                         res.end(data);
-                    })
+                    });
                 } else {
                     res.writeHead(200, { 'content-type': 'text/html' });
-                    // res.write(data)
                     res.end(data)
-                }
-            })
-        }
-    } 
+                };
+            });
+        };
+    }; 
 });
 
 server.listen(PORT, () => {
