@@ -28,24 +28,15 @@ const server = http.createServer((req, res) => {
                 res.end(data)
             });
         }
-        if (req.url === "/") {
-            fs.readFile("./public/index.html", "utf-8", (err, data) => {
-                res.writeHead(200, { 'content-type': 'text/html' });
-                res.end(data)
-            });
-        } else {
-            fs.readFile(`./public${req.url}`, "utf-8", (err, data) => {
-                if (err) {
-                    fs.readFile("./public/404.html", "utf-8", (err, data) => {
-                        res.writeHead(500, { 'content-type': 'text/html' });
-                        res.end(data);
-                    });
-                } else {
+
+        switch (req.url) {
+            case "/":
+                fs.readFile("./public/index.html", "utf-8", (err, data) => {
                     res.writeHead(200, { 'content-type': 'text/html' });
-                    res.end(data)
-                };
-            });
-        };
+                    res.end(data);
+                });
+            case ``
+        }
     }; 
 });
 
@@ -54,4 +45,21 @@ server.listen(PORT, () => {
 })
 
 
-       
+        // if (req.url === "/") {
+        //     fs.readFile("./public/index.html", "utf-8", (err, data) => {
+        //         res.writeHead(200, { 'content-type': 'text/html' });
+        //         res.end(data)
+        //     });
+        // } else {
+        //     fs.readFile(`./public${req.url}`, "utf-8", (err, data) => {
+        //         if (err) {
+        //             fs.readFile("./public/404.html", "utf-8", (err, data) => {
+        //                 res.writeHead(500, { 'content-type': 'text/html' });
+        //                 res.end(data);
+        //             });
+        //         } else {
+        //             res.writeHead(200, { 'content-type': 'text/html' });
+        //             res.end(data)
+        //         };
+        //     });
+        // };     
