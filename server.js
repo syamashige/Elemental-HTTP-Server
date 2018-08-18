@@ -20,67 +20,36 @@ const server = http.createServer((req, res) => {
 
     // GET METHOD
     if (req.method === "GET") {
-        if (req.url === "/styles.css") {
-            fs.readFile('./public/styles.css', 'utf-8', (err, data) => {
-                if (err) throw err;
-                res.writeHead(200, { 'content-type': 'text/css' });
-                res.write(data);
-                res.end();
-            });
-        };
 
-        switch (req.url) {
-            case "/":
-                fs.readFile('./public/index.html', 'utf-8', (err, data) => {
-                    console.log("index data", data)
-                    console.log("index.url", req.url)
-                    if (err) throw err;
+        if (req.url === "/styles.css") {
+            fs.readFile("./public/styles.css", "utf-8", (err, data) => {
+                res.writeHead(200, { 'content-type': 'text/css' });
+                // res.write(data);
+                res.end(data)
+            })
+        }
+        if (req.url === "/") {
+            fs.readFile("./public/index.html", "utf-8", (err, data) => {
+                // if (err) throw err;
+                res.writeHead(200, { 'content-type': 'text/html' });
+                // res.write(data);
+                res.end(data)
+            })
+        } else {
+            fs.readFile(`./public${req.url}`, "utf-8", (err, data) => {
+                if (err) {
+                    fs.readFile("./public/404.html", "utf-8", (err, data) => {
+                        res.writeHead(500, { 'content-type': 'text/html' });
+                        // res.write(data);
+                        res.end(data);
+                    })
+                } else {
                     res.writeHead(200, { 'content-type': 'text/html' });
-                    res.write(data);
-                    res.end();
-                });
-                // break;
-            case "/helium":
-                fs.readFile('./public/helium.html', 'utf-8', (err, data) => {
-                    console.log("helium data", data)
-                    if (err) throw err;
-                    res.writeHead(200, { 'content-type': 'text/html' });
-                    res.write(data);
-                    res.end();
-                });
-                break;
-            // case `${req.url}`:
-            //     fs.readFile(`./public${req.url}.html`, 'utf-8', (err, data) => {
-            //         console.log("req.url", `${req.url}`)
-            //         if (err) throw err;
-            //         res.writeHead(200, { 'content-type': 'text/html' });
-            //         res.write(data);
-            //         // res.end();
-            //     });
-            //     break;
-            // case '/styles.css':
-            //     fs.readFile('./public/styles.css', 'utf-8', (err, data) => {
-            //         if (err) throw err;
-            //         res.writeHead(200, { 'content-type': 'text/css' });
-            //         res.end();
-            //     });
-                // break;
-            default:
-                fs.readFile('./public/404.html', 'utf-8', (err, data) => {
-                    if (err) throw err;
-                    res.writeHead(500, { 'content-type': 'text/html' });
-                    res.write(data);
-                    res.end();
-                });    
-        };
-        // if (req.url === "/styles.css") {
-        //     fs.readFile('./public/styles.css', 'utf-8', (err, data) => {
-        //         if (err) throw err;
-        //         res.writeHead(200, { 'content-type': 'text/css' });
-        //         res.write(data);
-        //         res.end();
-        //     });
-        // };
+                    // res.write(data)
+                    res.end(data)
+                }
+            })
+        }
     } 
 });
 
@@ -89,54 +58,4 @@ server.listen(PORT, () => {
 })
 
 
-
-        // if(req.url === "/") {                                                 // If the url is "/"
-        //     fs.readFile("./public/index.html", 'utf-8', (err, data) => {      // Read the content in index.html
-        //         console.log("Index Data", data.toString());
-        //         if (err) throw err;                                            // If there's an error, throw an error
-        //         console.log("index data", data);
-
-        //         res.writeHead(200, { "content-type": "text/html" });    // 200 means the request has succeded 
-        //         // res.write(data);                                        // 
-        //         res.end(data);
-        //     });
-        // }
-        // if (req.url === "/helium.html") {
-        //     fs.readFile(`./public/helium.html`, 'utf-8', (err, data) => {
-        //         if (err) throw err;
-        //         console.log("Helium Data", data);
-
-        //         res.writeHead(200);
-        //         res.write(data);
-        //         res.end();
-        //     });
-        // }
-        // if (req.url === "/hydrogen.html") {
-        //     fs.readFile("./public/hydrogen.html", 'utf-8', (err, data) => {
-        //         if (err) throw err;
-        //         console.log("Hydrogen Data", data);
-
-        //         res.writeHead(200, { "Content-Type": "text/html" });
-        //         res.write(data);
-        //         res.end();
-        //     });
-        // }
-
-        // if (req.url === '/styles.css') {
-        //     fs.readFile('./public/styles.css', 'utf-8', (err, data) => {
-        //         if (err) throw err;
-        //         console.log("Making Everything Pretty!")
-        //         res.writeHead(200, { 'content-type': 'text/css' });
-        //         res.write(data);
-        //         res.end();
-        //     });
-        // };
-
-                
-        // fs.readFile('./public/404.html', "utf-8", (err, data) => {
-        //     if (err) throw err;
-        //     console.log("Error Data", data);
-        //     res.writeHead(500, { 'content-type': 'text/html' });
-        //     res.write(data);
-        //     res.end();
-        // }); 
+       
