@@ -1,8 +1,9 @@
 const http = require("http");
 const fs = require("fs");
+const qs = require("querystring");
 
-// SET PORT                                             // IF env is defined - it will save to PORT
-const PORT = process.env.PORT || 8080;                  // IF env is undefined - it will default to PORT 8080 
+// SET PORT                                                // IF env is defined - it will save to PORT
+const PORT = process.env.PORT || 8080;                     // IF env is undefined - it will default to PORT 8080 
     // console.log("process.env", process.env);            // All info about the environment
     // console.log("process.env.PORT", process.env.PORT);  // PORT is undefined 
 
@@ -14,9 +15,46 @@ const server = http.createServer((req, res) => {
     // console.log("req.url", req.url);                    // Url - returns '/'
 
     // POST METHOD 
-    // if (req.method === "POST") {
-    //     // Post Conditionals Here
-    // };
+    if (req.method === "POST") {
+        if (req.url === `${req.url}`){
+            let body = [];
+            req.on('error', (err) => {
+                console.error(err);
+                // if (err) {
+                    // fs.readFile("./public/404.hmtl", "utf-8", (err, data) => {
+                    //     res.writeHead(500, {'content-type': 'text/html'});
+                    //     res.end(data);
+                    // })
+                // }
+            }).on('data', (chunk) => {
+                body.push(chunk);
+            }).on('end', () => {
+                body = Buffer.concat(body).toString();
+                let parsedBody = qs.parse(body);
+
+                let bodyContents = `
+                <!DOCTYPE html>
+                <html lang="en">
+                <head>
+                    <meta charset="UTF-8">
+                    <title>The Elements - 
+                `
+
+                fs.writeFile(`./public/${parsedBody.name}.html`, bodyContents, () => {
+                    if (err) {
+                        res.writeHead(500);
+                        res.write('{status: error}');
+                        res.end();
+                    }
+
+                    res.writeHead(200);
+                    res.write('{status: ok}');
+                    res.end();
+                })
+                });
+            console.log("body", body);
+        }
+    };
 
     // GET METHOD
      if (req.method === "GET") {
