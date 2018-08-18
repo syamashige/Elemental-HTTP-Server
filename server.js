@@ -19,7 +19,7 @@ const server = http.createServer((req, res) => {
     // };
 
     // GET METHOD
-    if (req.method === "GET") {
+     if (req.method === "GET") {
 
         if (req.url === "/styles.css") {
             fs.readFile("./public/styles.css", "utf-8", (err, data) => {
@@ -35,9 +35,20 @@ const server = http.createServer((req, res) => {
                     res.writeHead(200, { 'content-type': 'text/html' });
                     res.end(data);
                 });
-            case ``
+                break;
+            case `${req.url}`:
+                fs.readFile(`./public${req.url}`, "utf-8", (err, data) => {
+                    res.writeHead(200, { 'content-type': 'text/html' });
+                    res.end(data);
+                });
+                break;
+            default: 
+                fs.readFile("./public/404.html", "utf-8", (err, data) => {
+                    res.writeHead(500, { 'content-type': 'text/html' });
+                    res.end(data);
+            })    
         }
-    }; 
+     }; 
 });
 
 server.listen(PORT, () => {
