@@ -42,7 +42,7 @@ const server = http.createServer((req, res) => {
                 <head>
                   <meta charset="UTF-8">
                   <title>The Elements - ${parsedBody.elementName}</title>
-                  <link rel="stylesheet" href="/styles.css">
+                  <link rel="stylesheet" href="/css/styles.css">
                 </head>
                 <body>
                   <h1>${parsedBody.elementName}</h1>
