@@ -16,9 +16,10 @@ const server = http.createServer((req, res) => {
 
     // POST METHOD 
     if (req.method === "POST") {
-        if (req.url === `${req.url}`){
+        if (req.url === "/elements"){
             let body = [];
-            req.on('error', (err) => {
+            req
+            .on('error', (err) => {
                 console.error(err);
                 // if (err) {
                     // fs.readFile("./public/404.hmtl", "utf-8", (err, data) => {
@@ -26,9 +27,11 @@ const server = http.createServer((req, res) => {
                     //     res.end(data);
                     // })
                 // }
-            }).on('data', (chunk) => {
+                })
+            .on('data', (chunk) => {
                 body.push(chunk);
-            }).on('end', () => {
+                })
+            .on('end', () => {
                 body = Buffer.concat(body).toString();
                 let parsedBody = qs.parse(body);
 
@@ -36,11 +39,21 @@ const server = http.createServer((req, res) => {
                 <!DOCTYPE html>
                 <html lang="en">
                 <head>
-                    <meta charset="UTF-8">
-                    <title>The Elements - 
+                  <meta charset="UTF-8">
+                  <title>The Elements - ${parsedBody.elementName}</title>
+                  <link rel="stylesheet" href="/styles.css">
+                </head>
+                <body>
+                  <h1>${parsedBody.elementName}</h1>
+                  <h2>${parsedBody.elementSymbol}</h2>
+                  <h3>Atomic Number ${parsedBody.elementAtomicNumber}</h3>
+                  <p>${parsedBody.elementDescription}</p>
+                  <p><a href="/">back</a></p>
+                </body>
+                </html>
                 `
 
-                fs.writeFile(`./public/${parsedBody.name}.html`, bodyContents, () => {
+                fs.writeFile(`./public/${(parsedBody.elementName).toLowerCase()}.html`, bodyContents, (err, data) => {
                     if (err) {
                         res.writeHead(500);
                         res.write('{status: error}');
@@ -51,38 +64,39 @@ const server = http.createServer((req, res) => {
                     res.write('{status: ok}');
                     res.end();
                 })
-                });
-            console.log("body", body);
+            });
         }
     };
 
     // GET METHOD
      if (req.method === "GET") {
-
-        if (req.url === "/styles.css") {
-            fs.readFile("./public/styles.css", "utf-8", (err, data) => {
-                res.writeHead(200, { 'content-type': 'text/css' });
-                // res.write(data);  //Returned an "unhandled event" - "throw"
-                res.end(data)
-            });
-        }
+        
+        // Don't need to add the css if you don't define the content-type in the res.writeHead  
+        // if (req.url === "/styles.css") {
+        //     fs.readFile("./public/styles.css", "utf-8", (err, data) => {
+        //         res.writeHead(200, { 'content-type': 'text/css' });
+        //         // res.write(data);  //Returned an "unhandled event" - "throw"
+        //         res.end(data)
+        //     });
+        // }
 
         switch (req.url) {
             case "/":
                 fs.readFile("./public/index.html", "utf-8", (err, data) => {
-                    res.writeHead(200, { 'content-type': 'text/html' });
+                    // res.writeHead(200, {'content-type':'text/html'}) -> with this way, you need to define the css 
+                    res.writeHead(200);    
                     res.end(data);
                 });
                 break;
             case `${req.url}`:
                 fs.readFile(`./public${req.url}`, "utf-8", (err, data) => {
-                    res.writeHead(200, { 'content-type': 'text/html' });
+                    res.writeHead(200);
                     res.end(data);
                 });
                 break;
             default: 
                 fs.readFile("./public/404.html", "utf-8", (err, data) => {
-                    res.writeHead(500, { 'content-type': 'text/html' });
+                    res.writeHead(500);
                     res.end(data);
             })    
         }
