@@ -79,7 +79,18 @@ const server = http.createServer((req, res) => {
                             }
                         });
                         console.log("Elements Array", elementArr);
+
+                        let string = "";
                     
+                        let func = (el) => {
+                            for (var i = 0; i < elementArr.length; i++) {
+                                string +=  `    <li>
+                                <a href="${el[i]}">${((el[i].split("."))[0]).charAt(0).toUpperCase()}${((el[i].split("."))[0]).slice(1)}</a>
+                              </li>`
+                            }
+                            return string;
+                        }
+
                      // Rewriting the index.html
                         let newBodyContent = `
                             <!DOCTYPE html>
@@ -95,7 +106,7 @@ const server = http.createServer((req, res) => {
                             <h3>These are ${elementArr.length}</h3>
                             <ol>
                             <!-- Function to loop through and create the file list -->
-                            
+                            ${func(elementArr)}
                             </ol>
                             </body>
                             </html>
