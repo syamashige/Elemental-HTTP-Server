@@ -18,24 +18,25 @@ const server = http.createServer((req, res) => {
     if (req.method === "POST") {
         if (req.url === "/elements"){
             let body = [];
+            // let elementArr = [];
             req
-            .on('error', (err) => {
-                console.error(err);
-                // if (err) {
+                .on('error', (err) => {
+                    console.error(err);
+                    // if (err) {
                     // fs.readFile("./public/404.hmtl", "utf-8", (err, data) => {
                     //     res.writeHead(500, {'content-type': 'text/html'});
                     //     res.end(data);
                     // })
-                // }
+                    // }
                 })
-            .on('data', (chunk) => {
-                body.push(chunk);
+                .on('data', (chunk) => {
+                    body.push(chunk);
                 })
-            .on('end', () => {
-                body = Buffer.concat(body).toString();
-                let parsedBody = qs.parse(body);
+                .on('end', () => {
+                    body = Buffer.concat(body).toString();
+                    let parsedBody = qs.parse(body);
 
-                let bodyContents = `
+                    let bodyContents = `
                 <!DOCTYPE html>
                 <html lang="en">
                 <head>
@@ -53,20 +54,66 @@ const server = http.createServer((req, res) => {
                 </html>
                 `
 
-                fs.writeFile(`./public/${(parsedBody.elementName).toLowerCase()}.html`, bodyContents, (err, data) => {
-                    if (err) {
-                        res.writeHead(500);
-                        res.write('{status: error}');
-                        res.end();
-                    }
+                    fs.writeFile(`./public/${(parsedBody.elementName).toLowerCase()}.html`, bodyContents, (err, data) => {
+                        if (err) {
+                            res.writeHead(500);
+                            res.write('{status: error}');
+                            res.end();
+                        }
 
-                    res.writeHead(200);
-                    res.write('{status: ok}');
-                    res.end();
-                })
-            });
-        }
+                        res.writeHead(200, {'content-type':'application/json'});
+                        res.write('{"success" : true}');
+                        res.end();
+                    })
+
+
+
+                    fs.readdir("./public", function (err, files) {
+                        console.log("files", files);
+                        console.log("files length", files.length - 4);
+                        // <h3>`These are ${files.length -4}`</h3>
+
+                        const elementArr = files.filter(file => {
+                            if (file !== "index.html" && file !== "404.html" && file !== ".keep" && file !== "css") {
+                                return file;
+                            }
+                        });
+                        console.log("Elements Array", elementArr);
+                    
+                     // Rewriting the index.html
+                        let newBodyContent = `
+                            <!DOCTYPE html>
+                            <html lang="en">
+                            <head>
+                            <meta charset="UTF-8">
+                            <title>The Elements</title>
+                            <link rel="stylesheet" href="/css/styles.css">
+                            </head>
+                            <body>
+                            <h1>The Elements</h1>
+                            <h2>These are all the known elements.</h2>
+                            <h3>These are ${elementArr.length}</h3>
+                            <ol>
+                            <!-- Function to loop through and create the file list -->
+                            
+                            </ol>
+                            </body>
+                            </html>
+                                `
+                    fs.writeFile(`./public/index.html`, newBodyContent, (err, data) => {
+                        res.writeHead(200);
+                        res.end(data);
+                    })                    
+
+                    });
+                });
+            };
     };
+    
+
+    
+
+
 
     // GET METHOD
      if (req.method === "GET") {
@@ -94,11 +141,11 @@ const server = http.createServer((req, res) => {
                     res.end(data);
                 });
                 break;
-            default: 
+            default:
                 fs.readFile("./public/404.html", "utf-8", (err, data) => {
                     res.writeHead(500);
                     res.end(data);
-            })    
+                });   
         }
      }; 
 });
